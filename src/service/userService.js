@@ -34,43 +34,56 @@ const createNewUser = async (email, password, username) => {
 }
 
 const getUserList = async () => {
+    // let users = [];
+    // // create the connection
+    // const connection = await mysql.createConnection({ host: 'localhost', user: 'root', password: 'Anhquoc@83', database: 'jwt', Promise: bluebird });
+
+    // const [rows, fields] = await connection.execute('SELECT * FROM `User`');
+    // return rows;
     let users = [];
-    // create the connection
-    const connection = await mysql.createConnection({ host: 'localhost', user: 'root', password: 'Anhquoc@83', database: 'jwt', Promise: bluebird });
+    users = await db.User.findAll();
+    return users;
 
-    const [rows, fields] = await connection.execute('SELECT * FROM `User`');
-    return rows;
-
-    // connection.query(
-    //     'Select * from User',
-    //     function (err, results, fields) {
-    //         if (err) {
-    //             console.log(err);
-    //             return users;
-    //         }
-    //         users = results;
-    //         return users;
-    //     }
-    // );
 }
 
-const deleteUser = async (id) => {
-    const connection = await mysql.createConnection({ host: 'localhost', user: 'root', password: 'Anhquoc@83', database: 'jwt', Promise: bluebird });
+const deleteUser = async (userId) => {
+    // const connection = await mysql.createConnection({ host: 'localhost', user: 'root', password: 'Anhquoc@83', database: 'jwt', Promise: bluebird });
 
-    const [rows, fields] = await connection.execute('DELETE  FROM `User` where id = ?', [id]);
-    return rows;
+    // const [rows, fields] = await connection.execute('DELETE  FROM `User` where id = ?', [id]);
+    // return rows;
+    await db.User.destroy({
+        where: {
+            id: userId
+        }
+    });
 }
 
 const getUserById = async (id) => {
-    const connection = await mysql.createConnection({ host: 'localhost', user: 'root', password: 'Anhquoc@83', database: 'jwt', Promise: bluebird });
+    // const connection = await mysql.createConnection({ host: 'localhost', user: 'root', password: 'Anhquoc@83', database: 'jwt', Promise: bluebird });
 
-    const [rows, fields] = await connection.execute('SELECT *  FROM `User` where id = ?', [id]);
-    return rows;
+    // const [rows, fields] = await connection.execute('SELECT *  FROM `User` where id = ?', [id]);
+    // return rows;
+    const userById = await db.User.findByPk(id);
+    if (userById === null) {
+        console.log('Not found!');
+        return null;
+    } else {
+        return userById;
+    }
+
 }
-const updateUserInfo = async (email, username, id) => {
-    const connection = await mysql.createConnection({ host: 'localhost', user: 'root', password: 'Anhquoc@83', database: 'jwt', Promise: bluebird });
+const updateUserInfo = async (userEmail, userName, userId) => {
+    // const connection = await mysql.createConnection({ host: 'localhost', user: 'root', password: 'Anhquoc@83', database: 'jwt', Promise: bluebird });
 
-    const [rows, fields] = await connection.execute('UPDATE User SET email = ? , username = ? where id = ?', [email, username, id]);
+    // const [rows, fields] = await connection.execute('UPDATE User SET email = ? , username = ? where id = ?', [email, username, id]);
+    await db.User.update({
+        email: userEmail,
+        username: userName
+    }, {
+        where: {
+            id: userId
+        }
+    });
 }
 module.exports = {
     createNewUser, getUserList, deleteUser, getUserById, updateUserInfo
