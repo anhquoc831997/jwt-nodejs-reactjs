@@ -40,6 +40,22 @@ const getUserList = async () => {
 
     // const [rows, fields] = await connection.execute('SELECT * FROM `User`');
     // return rows;
+    //test relationship
+    let newUser = await db.User.findOne({
+        where: { id: 1 },
+        attributes: ["id", "username", "email"],
+        include: { model: db.Group, attributes: ["name", "description"] },
+        raw: true,
+        nest: true
+    });
+    console.log("check new user", newUser);
+
+    let roles = await db.Role.findAll({
+        include: { model: db.Group, where: { id: 1 } },
+        raw: true,
+        nest: true
+    })
+    console.log("check role", roles);
     let users = [];
     users = await db.User.findAll();
     return users;
