@@ -1,5 +1,4 @@
 import loginRegisterService from '../service/loginRegisterService'
-
 const testApi = (req, res) => {
     return res.status(200).json({
         message: 'ok',
@@ -42,6 +41,42 @@ const handleRegister = async (req, res) => {
 
     }
 }
+const handleLogin = async (req, res) => {
+    console.log("call me", req.body);
+    try {
+        //req.body
+        if (!req.body.valueLogin || !req.body.password) {
+            return res.status(200).json({
+                EM: 'Missing require parameters', // error message
+                EC: '1', //error code
+                DT: ''//data
+            })
+        }
+        if (req.body.password && req.body.password.length < 4) {
+            return res.status(200).json({
+                EM: 'Your password must have more than 3 letter', // error message
+                EC: '1', //error code
+                DT: ''//data
+            })
+        }
+
+        // service : create user
+        let data = await loginRegisterService.loginUser(req.body);
+
+        return res.status(200).json({
+            EM: data.EM, // error message
+            EC: data.EC, //error code
+            DT: ''//data
+        })
+    } catch (e) {
+        return res.status(500).json({
+            EM: 'error from server', // error message
+            EC: '-1', //error code
+            DT: ''//data
+        })
+
+    }
+}
 module.exports = {
-    testApi, handleRegister
+    testApi, handleRegister, handleLogin
 }
